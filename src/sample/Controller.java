@@ -26,15 +26,15 @@ public class Controller {
     private boolean jmbgValidno;
     private boolean datumValidno;
     private boolean emailValidno;
-    private boolean adresaValidno;
-    private boolean telephoneValidno;
+    //private boolean adresaValidno;
+    //private boolean telefonValidno;
 
     public boolean formularValidan() {
-        return (imeValidno && prezimeValidno && indeksValidan && jmbgValidno && datumValidno && emailValidno && telephoneValidno);
+        return (imeValidno && prezimeValidno && indeksValidan && jmbgValidno && datumValidno && emailValidno);
     }
 
     private boolean ispravnoImeiPrezime(String n) {
-        if (n.length() < 2 || n.length() > 20) return false;
+        if (n.length() < 1 || n.length() > 20) return false;
         for (int i = 0; i < n.length(); i++) {
             if (!(n.charAt(i) >= 'A' && n.charAt(i) <= 'Z') && !(n.charAt(i) >= 'a' && n.charAt(i) <= 'z'))
                 return false;
@@ -43,7 +43,12 @@ public class Controller {
     }
 
     private boolean ispravanDatum(String n) {
-        return !n.trim().isEmpty();
+        for (int i = 0; i < n.length(); i++) {
+            if (n.charAt(i) >= '0' && n.charAt(i) <= '9') {
+                for (int j = 0; j < n.length(); j++) if(n.charAt(j) == '/' || n.charAt(j) == '.') return true;
+            }
+        }
+        return false;
     }
 
     private boolean ispravanJMBG(String n) {
@@ -61,20 +66,18 @@ public class Controller {
 
     private boolean ispravanIndex(String n) {
         if (n.length() > 5) return false;
-        for (int i = 0; i < n.length(); i++) if (!(n.charAt(i) >= '0' && n.charAt(i) < '9')) return false;
+        for (int i = 0; i < n.length(); i++) if (!(n.charAt(i) >= '0' && n.charAt(i) <= '9')) return false;
         return !n.trim().isEmpty();
     }
 
-    private boolean ispravnaAdresa(String n) {
-        for (int i = 0; i < n.length(); i++) {
-            if(i == n.length() - 1) {
-                if (!(n.charAt(i) >= '0' && n.charAt(i) < '9')) return false;
-            }
-            if (!(n.charAt(i) >= 'A' && n.charAt(i) <= 'Z') && !(n.charAt(i) >= 'a' && n.charAt(i) <= 'z'))
-                return false;
-        }
+    /*private boolean ispravnaAdresa(String n) {
         return !n.trim().isEmpty();
     }
+
+    private boolean ispravanTelefon(String n) {
+        for (int i = 0; i < n.length(); i++) if (n.charAt(i) == '/' || n.charAt(i) == '-') return true;
+        return false;
+    } NEPOTREBNO */
 
     @FXML
     public void initialize() {
@@ -84,14 +87,16 @@ public class Controller {
         jmbgValidno = false;
         datumValidno = false;
         emailValidno = false;
-        telephoneValidno = false;
+        //telefonValidno = false;
+        //adresaValidno = false;
         ime.getStyleClass().add("nijepopunjeno");
         prezime.getStyleClass().add("nijepopunjeno");
         index.getStyleClass().add("nijepopunjeno");
         jmbg.getStyleClass().add("nijepopunjeno");
         datum.getStyleClass().add("nijepopunjeno");
         email.getStyleClass().add("nijepopunjeno");
-        telefon.getStyleClass().add("nijepopunjeno");
+        //telefon.getStyleClass().add("nijepopunjeno"); MOZE BITI PRAZNO
+        //adresa.getStyleClass().add("nijepopunjeno"); MOZE BITI PRAZNO
 
         ime.textProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -177,8 +182,7 @@ public class Controller {
                 }
             }
         });
-
-        adresa.textProperty().addListener(new ChangeListener<String>() {
+        /*adresa.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String o, String n) {
                 if (ispravnaAdresa(n)) {
@@ -192,6 +196,20 @@ public class Controller {
                 }
             }
         });
+        telefon.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String o, String n) {
+                if (ispravanTelefon(n)) {
+                    telefon.getStyleClass().removeAll("nijepopunjeno");
+                    telefon.getStyleClass().add("popunjeno");
+                    telefonValidno = true;
+                } else {
+                    telefon.getStyleClass().removeAll("popunjeno");
+                    telefon.getStyleClass().add("nijepopunjeno");
+                    telefonValidno = false;
+                }
+            }
+        }); ADRESA I TELEFON IPAK MOGU BITI PRAZNI */
     }
 
 
