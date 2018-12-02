@@ -2,6 +2,7 @@ package sample;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -28,6 +29,9 @@ public class Controller {
     private boolean emailValidno;
     //private boolean adresaValidno;
     //private boolean telefonValidno;
+    public String uporediSaJmbg;
+    public String datumZaIspis = "";
+    public String uporeditiDatum = "";
 
     public boolean formularValidan() {
         return (imeValidno && prezimeValidno && indeksValidan && jmbgValidno && datumValidno && emailValidno);
@@ -43,9 +47,11 @@ public class Controller {
     }
 
     private boolean ispravanDatum(String n) {
+        if (n.length() < 8) return false;
         for (int i = 0; i < n.length(); i++) {
             if (n.charAt(i) >= '0' && n.charAt(i) <= '9') {
-                for (int j = 0; j < n.length(); j++) if(n.charAt(j) == '/' || n.charAt(j) == '.') return true;
+                for (int j = 0; j < n.length(); j++)
+                    if (n.charAt(j) == '/' || n.charAt(j) == '.' || n.charAt(j) == '-') return true;
             }
         }
         return false;
@@ -212,5 +218,54 @@ public class Controller {
         }); ADRESA I TELEFON IPAK MOGU BITI PRAZNI */
     }
 
+    public void potvrdiKlik(ActionEvent actionEvent) {
+        String rodj = mjesto.getEditor().getText();
+        String novoIme = ime.getText();
+        String novoPrezime = prezime.getText();
+        String noviDatum = datum.getText();
+        String noviJMBG = jmbg.getText();
+        String noviEmail = email.getText();
+
+        if (ispravanDatum(noviDatum)) {
+            datumValidno = true;
+        } else {
+            datumValidno = false;
+            datum.getStyleClass().add("nijepopunjeno");
+        }
+
+        if (ispravanJMBG(noviJMBG)) {
+            jmbgValidno = true;
+        } else {
+            jmbgValidno = false;
+            jmbg.getStyleClass().add("nijepopunjeno");
+        }
+
+        if (ispravanEmail(noviEmail)) {
+            emailValidno = true;
+
+        } else {
+            emailValidno = false;
+            email.getStyleClass().add("nijepopunjeno");
+        }
+
+        if (formularValidan()) {
+            System.out.println("Student: " + novoIme + " " + novoPrezime + " (" + index.getText() + ")");
+            System.out.println("JMBG: " + noviJMBG);
+            System.out.println("Datum rodjenja: " + noviDatum + ", mjesto rodjenja: " + rodj);
+            System.out.println("Ulica stanovanja: " + adresa.getText());
+            System.out.println("Broj telefona: " + telefon.getText());
+            System.out.println("Email adresa: " + noviEmail);
+            System.out.println("Upisan kao: " + status.getValue().toString() + " student, smjer: " + smjer.getValue().toString() + ", godina: " + godina.getValue());
+            if (pripadnost.isSelected()) System.out.println("Postoji pripadnost borackim kategorijama!");
+            else System.out.println("Ne postoji pripadnost borackim kategorijama!");
+        }
+        if (!formularValidan()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Nije validno!");
+            alert.setHeaderText("Popunjeni podaci nisu validni!");
+            alert.setContentText("Molimo Vas da ispravno popunite formular!");
+            alert.show();
+        }
+    }
 
 }
